@@ -10,31 +10,93 @@ import SubHeading from "../../components/SubHeading";
 import CategoriesList from "../../components/CategoriesList";
 import blogService from "../../services/blogService";
 import categoriesService from "../../services/categoriesService";
+import Loading from "../../components/Loading";
+import SuccessToast from "../../components/SuccessToast";
+import ErrorToast from "../../components/ErrorToast";
 
 // Week 1: Import the blogPosts and categories from the dummy-data.json file
 
 
-export default function HomePage() {
+// export default function HomePage() {
 
-  const [blogs, setBlogs] = useState();
-  const [categories, setCategories] = useState(null);
+//   const [blogs, setBlogs] = useState();
+//   const [categories, setCategories] = useState(null);
+
+//   useEffect(() => {
+
+//     const fetchData = async () => {
+//       try {
+//         console.log("HELP HOME");
+//         const cats = await categoriesService.fetchCategories();
+//         const blogsRes = await blogService.getBlogs();
+//         setBlogs(blogsRes);
+//         setCategories(cats);
+//       } catch (err) {
+//         throw new Error(err);
+//       }
+//     }
+//     fetchData();
+//     }, []);
+
+
+
+//   return (
+//     <>
+//       <Navbar />
+//       <div className="container">
+//         <Heading />
+//         <SubHeading subHeading={"Recent Blog Posts"} />
+//         <BlogGrid blogPosts={blogs}></BlogGrid>
+//         <SubHeading subHeading={"Categories"} />
+//         <CategoriesList categories={categories}></CategoriesList>
+//         <Footer />
+//       </div>
+//     </>
+//   );
+// }
+
+export default function HomePage() {
+  const [blogs, setBlogs] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [isError, setIsError] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [message, setMessage] = useState("");
+
 
   useEffect(() => {
-
-    const fetchBlogsCats = async () => {
+    const fetchData = async () => {
       try {
-        const cats = await categoriesService.getCategories();
-        const blogsRes = await blogService.getBlogs();
-        setBlogs(blogsRes);
+        setIsLoading(true);
+        const blogs = await blogService.getBlogs();
+        const cats = await categoriesService.fetchCategories();
+        setBlogs(blogs.data.reverse());
         setCategories(cats);
-      } catch (err) {
-        throw new Error(err);
+        setIsSuccess(true);
+        setMessage(blogs.message);
+        setIsLoading(false);
+      } catch (error) {
+        setIsError(true);
+        setMessage(error.message);
+        setIsLoading(false);
       }
-    }
-    fetchBlogsCats();
-    }, []);
+    };
+    fetchData();
+  }, []);
 
+  const resetSuccess = () => {
+    setIsSuccess(false);
+    setMessage("");
+  }
 
+   const resetError = () => {
+    setIsError(false);
+    setMessage("");
+  }
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <>
@@ -47,6 +109,16 @@ export default function HomePage() {
         <CategoriesList categories={categories}></CategoriesList>
         <Footer />
       </div>
+      <SuccessToast
+        show={isSuccess}
+        message={message}
+        onClose={resetSuccess}
+      />
+      <ErrorToast
+        show={isError}
+        message={message}
+        onClose={resetError}
+      />
     </>
   );
 }

@@ -5,10 +5,6 @@ import "./index.css";
 
 import BlogItem from "../BlogItem";
 
-const data = require("../../dummy-data.json");
-let blogPosts = data.blogPosts;
-const categories = data.categories;
-
 export default function BlogGrid({ blogPosts }) {
   if (!blogPosts || !blogPosts.length) {
     return null;

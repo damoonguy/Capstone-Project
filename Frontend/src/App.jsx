@@ -26,7 +26,7 @@ const routes = [
     element: <BlogsPage />,
   },
   {
-    path: "/blogs/:categoryIdPassed?",
+    path: "/blogs/category/:categoryIdPassed?",
     element: <BlogsPage />,
   },
   {

@@ -45,9 +45,9 @@ export default function BlogPage() {
     return (
         <div> 
             <Navbar/>
-            <SubHeading subHeading={blog.title} style={"font-size: 144px;"}/> 
+            {/* <SubHeading subHeading={blog.title} style={"font-size: 144px;"}/> 
             <h1>This is blog { blogId }</h1>
-            <BlogAuthor/>
+            <BlogAuthor/> */}
         </div>
     );
 }

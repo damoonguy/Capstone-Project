@@ -1,10 +1,18 @@
 const express = require("express");
 const cors = require("cors");
-const app = express();
-const port = 8000;
+require("dotenv").config();
+
+const connectDB = require("./database/db");
+
+connectDB();
+
+const port = process.env.PORT;
 
 const blogsRoutes = require("./routes/blogs");
 const categoriesRoutes = require("./routes/categories");
+
+const app = express();
+
 
 app.use(cors()); // Enables CORS from any unknown origin
 

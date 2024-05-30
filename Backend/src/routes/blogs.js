@@ -5,46 +5,52 @@ const blogController = require("../controllers/blogs");
 
 
 /**
+ * Create new blog
  * POST /api/blogs/
  */
 router.post("/", (req, res) => {
-    console.log(req.body);
     blogController.createBlog(req, res);
-    res.send("post");
 });
 
 /**
+ * Get all blogs
  * GET /api/blogs/
  */
 router.get("/", (req, res) => {
     blogController.getBlogs(req, res);
-    res.send("blogs");
 });
 
 /**
  * get blogs by categoryId
- * GET /api/blogs/categories/:id
+ * GET /api/blogs/categories/:categoryId
  */
-router.get("/categories/:id", (req, res) => {
+router.get("/category/:categoryId", (req, res) => {
     blogController.getBlogsByCategoryId(req, res);
-    res.send("Blogs by category id: " + req.params.id);
 });
+
+/**
+ * get blogs by author id
+ * GET /api/blogs/author/:id
+ */
+router.get("/author/:id", (req, res) => {
+    blogController.getBlogsByAuthorId(req, res);
+});
+
 
 /**
  * get blogs by blogId
  * GET /api/blogs/:id
  */
 router.get("/:id", (req, res) => {
-    blogController.getBlogById(req, res);
-    res.send("Blog by id: " + req.params.id);
+    blogController.getBlog(req, res);
 });
 
 /**
+ * Update blog by blog id
  * PUT /api/blogs/
  */
 router.put("/:id", (req, res) => {
-    blogController.updateBlogById(req, res);
-    res.send("put: "+ req.params.id);
+    blogController.updateBlog(req, res);
 });
 
 /**
@@ -52,9 +58,8 @@ router.put("/:id", (req, res) => {
  * DELETE /api/blogs/
  */
 router.delete("/:id", (req, res) => {
-    blogController.deleteBlogById(req, res);
-    res.send("delete post: " + req.params.id);
-
+    blogController.deleteBlog(req, res);
 });
+
 
 module.exports = router;

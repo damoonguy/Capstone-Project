@@ -1,31 +1,23 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { useNavigate } from "react-router-dom";
-
-
 import "./index.css";
 
 export default function CategoriesList({ categories }) {
-  const nav = useNavigate();
-
-  
-  if (!categories || !categories?.length) {
+  if (!categories && !categories?.length) {
     return null;
   }
 
-  
-
   return (
     <div className="category-list">
-      {categories.map((category, index) => {
+      {categories.map((category) => {
         return (
           <button
-            key={index}
+            key={category.id}
             className="card"
             style={{ borderRadius: "0px", border: "none" }}
             onClick={() => {
-              nav("/blogs/" + category.id);
+              console.log("TODO: Navigate to categories page");
             }}
           >
             <div
@@ -50,6 +42,6 @@ export default function CategoriesList({ categories }) {
   );
 }
 
-CategoriesList.propTypes = {
-  categories: PropTypes.array.isRequired
+CategoriesList.prototype = {
+  categories: PropTypes.array.isRequired,
 };

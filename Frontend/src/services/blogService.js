@@ -1,8 +1,31 @@
+const url = "http://localhost:5000/api/blogs/";
+
+const createBlog = async (blog) => {
+
+    try {
+        const data = await fetch(url, 
+            { 
+
+                method: "POST", 
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: blog
+            }
+        );
+        const blogsApiData = await data.json();
+        return blogsApiData;
+    } catch (err) {
+        throw new Error(err);
+    }
+};
+
 
 const getBlogs = async () => {
 
+
     try {
-        const data = await fetch("https://ix-blog-app-2d5c689132cd.herokuapp.com/api/blogs", 
+        const data = await fetch(url, 
             { 
                 method: "GET", 
                 headers: {
@@ -10,8 +33,9 @@ const getBlogs = async () => {
                 }
             }
         );
+        console.log(data);
         const blogsApiData = await data.json();
-        return blogsApiData.data;
+        return blogsApiData;
     } catch (err) {
         throw new Error(err);
     }
@@ -20,7 +44,44 @@ const getBlogs = async () => {
 const getBlogById = async (blogId) => {
 
     try {
-        const data = await fetch("https://ix-blog-app-2d5c689132cd.herokuapp.com/api/blogs", 
+        const data = await fetch(url+blogId, 
+            { 
+                method: "GET", 
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }
+        );
+        const result = await data.json();
+        return result;
+    } catch (err) {
+        throw new Error(err);
+    }
+};
+
+const getBlogsByAuthorId = async (authorId) => {
+  try {
+    const response = await fetch(url+"author/" + authorId,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const responseData = await response.json();
+    console.log(responseData.message);
+    return responseData;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+const getBlogsByCategoryId = async (categoryId) => {
+
+
+    try {
+        const data = await fetch(url+"category/"+categoryId, 
             { 
                 method: "GET", 
                 headers: {
@@ -29,7 +90,43 @@ const getBlogById = async (blogId) => {
             }
         );
         const blogsApiData = await data.json();
-        const result = blogsApiData.data.find((x) => x.id === blogId ? x : false);
+        return blogsApiData;   
+    } catch (err) {
+        throw new Error(err);
+    }
+};
+
+const updateBlog = async (blog) => {
+
+    try {
+        const data = await fetch(url+blog.get("id"), 
+            { 
+                method: "PUT", 
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: blog
+            }
+        );
+        const result = await data.json();
+        return result;
+    } catch (err) {
+        throw new Error(err);
+    }
+};
+
+const deleteBlog = async (blogId) => {
+
+    try {
+        const data = await fetch(url+blogId, 
+            { 
+                method: "DELETE", 
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }
+        );
+        const result = await data.json();
         return result;
     } catch (err) {
         throw new Error(err);
@@ -37,28 +134,14 @@ const getBlogById = async (blogId) => {
 };
 
 
-const getBlogsByCategoryId = async (categoryId) => {
-
-
-    try {
-        const data = await fetch("https://ix-blog-app-2d5c689132cd.herokuapp.com/api/blogs/category/"+categoryId, 
-            { 
-                method: "GET", 
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            }
-        );
-        let blogsApiData = await data.json();
-        return blogsApiData.data;   
-    } catch (err) {
-        throw new Error(err);
-    }
-};
-
-
 const blogService = {
-    getBlogs, getBlogsByCategoryId, getBlogById
-}
+  createBlog,
+  getBlogs,
+  getBlogsByCategoryId,
+  getBlogsByAuthorId,
+  getBlogById,
+  updateBlog,
+  deleteBlog,
+};
 
 export default blogService;

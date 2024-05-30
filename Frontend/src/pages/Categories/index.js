@@ -23,7 +23,7 @@ export default function CategoriesPage() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const cats = await categoriesService.getCategories();
+        const cats = await categoriesService.fetchCategories();
         setCategories(cats);
       } catch (err) {
         throw new Error(err);
