@@ -4,10 +4,6 @@ const mongoose = require("mongoose");
 
 const categorySchema = new mongoose.Schema(
     {
-        id: {
-            type: String,
-            required: true,
-        },
         title: {
             type: String,
             required: true,
@@ -21,7 +17,13 @@ const categorySchema = new mongoose.Schema(
             required: true,
         }
     },
-    { timeStamp: true }
+    { timeStamps: true }
   );
+
+  categorySchema.method("toJSON", function () {
+    const { __v, _id, ...object } = this.toObject();
+    object.id = _id;
+    return object;
+  });
   
   module.exports = mongoose.model("Category", categorySchema);

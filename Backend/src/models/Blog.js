@@ -1,44 +1,16 @@
 const mongoose = require("mongoose");
 
-
-const authorSchema = new mongoose.Schema(
-    {
-        id: {
-            type: String,
-            required: true
-        },
-        firstName: {
-            type: String,
-            required: true
-        },
-        lastName: {
-            type: String,
-            required: true
-        },
-        bio: {
-            type: String,
-            required: true
-        },
-        image: {
-            type: String,
-            required: true
-        }
-    }
-)
-
 const blogSchema = new mongoose.Schema(
   {
-    id: {
-      type: String,
-      required: true
-    },
     author: {
-      type: authorSchema,
+      type: Map,
+      of: mongoose.Schema.Types.Mixed,
       required: true,
     },
-    categories: {
-      type: Array,
+    categoryIds: {
+      type: [mongoose.Schema.Types.ObjectId],
       required: true,
+      ref: "Category",
     },
     title: {
       type: String,
@@ -50,22 +22,36 @@ const blogSchema = new mongoose.Schema(
     },
     image: {
       type: String,
-      required: true,
+      default: "https://storage.googleapis.com/ix-blog-app/default.jpeg",
     },
     content: {
       type: Array,
       required: true,
     },
-    createdAt: {
-        type: String,
-        required: true
-    },
-    updatedAt: {
-        type: String,
-        required: true
-    }
   },
-  { timeStamp: true }
+  { timestamps: true }
 );
+
+// Add a toJSON method to the schema to control the output of blog instances
+blogSchema.method("toJSON", function () {
+  const { __v, _id, categoryIds, ...object } = this.toObject();
+  object.id = _id;
+
+  object.categories = categoryIds.map((category) => {
+    return {
+      id: category._id,
+      title: category.title,
+      description: category.description,
+      color: category.color,
+    };
+  });
+
+  // Ensure author is included in the returned object
+  if (this.author) {
+    object.author = this.author;
+  }
+
+  return object;
+});
 
 module.exports = mongoose.model("Blog", blogSchema);

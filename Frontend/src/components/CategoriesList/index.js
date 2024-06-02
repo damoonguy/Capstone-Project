@@ -1,12 +1,21 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
 
 import "./index.css";
 
-export default function CategoriesList({ categories }) {
+import EditButtons from "../EditButtons";
+
+export default function CategoriesList({ categories, onEdit, onDelete }) {
+  const nav = useNavigate();
   if (!categories && !categories?.length) {
     return null;
   }
+
+  const navToBlogsPage = (id) => {
+    if (!onEdit && !onDelete) {
+     nav(`/blogs/${id}`);
+  }};
 
   return (
     <div className="category-list">
@@ -16,9 +25,7 @@ export default function CategoriesList({ categories }) {
             key={category.id}
             className="card"
             style={{ borderRadius: "0px", border: "none" }}
-            onClick={() => {
-              console.log("TODO: Navigate to categories page");
-            }}
+            onClick={() => navToBlogsPage(category.id)}
           >
             <div
               className="card-body w-100"
@@ -35,6 +42,16 @@ export default function CategoriesList({ categories }) {
                 {category.description.substring(1, 100)} ...
               </p>
             </div>
+            {onEdit && onDelete && (
+              <EditButtons
+                onEdit={() => {
+                  onEdit(category);
+                }}
+                onDelete={() => {
+                  onDelete(category);
+                }}
+              />
+            )}
           </button>
         );
       })}
@@ -44,4 +61,6 @@ export default function CategoriesList({ categories }) {
 
 CategoriesList.prototype = {
   categories: PropTypes.array.isRequired,
+  onEdit: PropTypes.func,
+  onDelete: PropTypes.func
 };

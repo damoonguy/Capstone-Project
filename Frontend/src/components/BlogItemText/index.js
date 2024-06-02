@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 
 
 export default function BlogItemText({ blogPost, headerFontSize }) {
+  
   return (
     <div>
       <div style={{ display: "flex" }}>
@@ -27,7 +28,7 @@ export default function BlogItemText({ blogPost, headerFontSize }) {
       <p style={{ fontSize: "16px", color: "#667085", textAlign: "left" }}>
         {blogPost.description.substring(0, 100)}...
       </p>
-      <Categories blogPost={blogPost} />
+      <Categories categories={blogPost?.categories} />
     </div>
   );
 }

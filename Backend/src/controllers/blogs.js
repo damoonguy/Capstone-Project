@@ -1,108 +1,120 @@
 const Blog = require("../models/Blog");
 
-const createBlog = async (req, res) => {
-
+const createBlogs = async (req, res) => {
   try {
+    const categoryIds = req.body.categories.map((x) => x.id);
+    console.log(categoryIds);
     const blog = new Blog({
       author: req.body.author,
-      categories: req.body.categories,
-      readTime: req.body.readTime,
+      categoryIds: categoryIds,
       title: req.body.title,
-      description: req.body.description,
       image: req.body.image,
+      description: req.body.description,
       content: req.body.content,
-      createdAt: req.body.createdAt,
-      updatedAt: req.body.updatedAt
     });
     const newBlog = await blog.save();
-    return res.status(201).json({ message: "New blog created!", data: newBlog });
+    const blogRes = await Blog.findById(newBlog._id).populate({
+      path: "categoryIds",
+    });
+    res.status(201).json({ message: "New blog created!", data: blogRes });
   } catch (error) {
-    return res.status(500).json({ message: error.message, data: [] });
+    res.status(500).json({ message: error.message, data: {} });
   }
 };
 
 const getBlogs = async (req, res) => {
-
-
   try {
-    const blogs = await Blog.find();
-    return res.status(200).json({ message: "Return all blogs!", data: blogs });
-  } catch (error) {
-    return res.status(500).json({ message: error.message, data: [] });
+    const blogs = await Blog.find().populate({path: "categoryIds"});
+    res.status(200).json({
+    message: "Get all blogs!",
+    data: blogs,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: err.message, data: {} });
   }
 };
 
-const getBlog = async (req, res) => {
-  
+const getBlogById = async (req, res) => {
   try {
-    const blog = await Blog.findById(req.params.id);
+    console.log(req.params.id);
+    const blog = await Blog.findById(req.params.id).populate({
+      path: "categoryIds",
+    });
     if (blog) {
-      return res.status(200).json({ message: "Return blog by ID!", data: blog });
+      res.status(200).json({ message: "Return blog by ID!", data: blog });
     } else {
-      return res.status(404).json({ message: "Blog not found!", data: [] });
+      res.status(404).json({ message: "Blog not found!", data: {} });
     }
-  } catch (error) {
-    return res.status(500).json({ message: error.message, data: [] });
+  } catch (err) {
+    res.status(500).json({ message: err.message, data: {} });
   }
 };
 
 const getBlogsByCategoryId = async (req, res) => {
   try {
-    let blogs = await Blog.find();
-    if (blogs) {
-      const blogsByCategoryId = blogs.filter((x) => x.categories.find((y) => 
-        y.id.toString() === req.params.categoryId ? x : false));
-      return res.status(200).json({message: "Return blogs by category ID!", data: blogsByCategoryId});
-    } else {
-      return res.status(404).json({ message: "Blog not found!", data: [] });
+    console.log(req.params.categoryId);
+    let filter = {};
+    if (req.params.categoryId != "null" && req.params.categoryId != "undefined") {
+      filter = { categoryIds: req.params.categoryId };
     }
-  } catch(error) {
-    return res.status(500).json({ message: error.message, data: [] });
+    const blogs = await Blog.find(filter).populate({ path: "categoryIds" });
+    res.status(200).json({
+      message: "Get blogs by categoryID!",
+      data: blogs,
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message, data: {} });
   }
 };
 
 const getBlogsByAuthorId = async (req, res) => {
   try {
-    let blogs = await Blog.find();
-    if (blogs) {
-      const blogsByAuthor = blogs.filter((x) => x.authorId === req.params.id ? x : false);
-      console.log(blogsByAuthor);
-      return res.status(200).json({message: "Return blogs by author ID!", data: blogsByAuthor});
-    } else {
-      return res.status(404).json({ message: "Blog not found!", data: [] });
-    }
-  } catch(error) {
-    return res.status(500).json({ message: error.message, data: [] });
+    console.log(req.params.id);
+    const blogs = await Blog.find(filter).populate({ path: "categoryIds" });
+    res.status(200).json({
+      message: "Get blogs by categoryID!",
+      data: blogs,
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message, data: {} });
   }
 };
 
-const updateBlog = async (req, res) => {
+
+const updateBlogById = async (req, res) => {
+  console.log(req.body);
   try {
-    const blog = await Blog.findById(req.params.id);
+    const blog = await Blog.findById(req.params.id).populate({
+      path: "categoryIds",
+    });
     if (blog) {
-      blog.author = req.body.author || blog.author;
-      blog.categories = req.body.categories || blog.categories;
-      blog.title = req.body.title || blog.title;
-      blog.description = req.body.description || blog.description;
-      blog.image = req.body.image || blog.image;
-      blog.content = req.body.content || blog.content;
-      blog.createdAt = req.body.createdAt || blog.createdAt;
-      blog.updatedAt = req.body.updatedAt || blog.updatedAt;
+      const categoryIds = req?.body?.categories.map((x) => x.id);
+      blog.author = req?.body?.author || blog.author;
+      blog.categoryIds = categoryIds ? categoryIds : blog.categoryIds;
+      blog.title = req?.body?.title || blog.title;
+      blog.description = req?.body?.description || blog.description;
+      blog.content = req.body.content ? req.body.content : blog.content;
       const updatedBlog = await blog.save();
-      return res.status(200).json({ message: "Blog updated!", data: updatedBlog });
+      const blogRes = await updatedBlog.populate({
+        path: "categoryIds",
+      });
+      res.status(200).json({ message: "Blog updated!", data: blogRes });
     } else {
-      return res.status(404).json({ message: "Blog not found!", data: [] });
+      res.status(404).json({ message: "Blog not found!", data: [] });
     }
   } catch (error) {
-    return res.status(500).json({ message: error.message, data: [] });
+    res.status(500).json({ message: error.message, data: {} });
   }
 };
 
-const deleteBlog = async (req, res) => {
+const deleteBlogById = async (req, res) => {
   try {
     const blog = await Blog.findByIdAndDelete(req.params.id);
     if (blog) {
-      return res.status(200).json({ message: "Blog deleted!" });
+      return res
+        .status(200)
+        .json({ message: "Blog deleted!", id: req.params.id });
     } else {
       return res.status(404).json({ message: "Blog not found!" });
     }
@@ -111,12 +123,14 @@ const deleteBlog = async (req, res) => {
   }
 };
 
-module.exports = {
-  createBlog,
+const blogController = {
+  createBlogs,
   getBlogs,
-  getBlog,
-  getBlogsByAuthorId,
+  getBlogById,
   getBlogsByCategoryId,
-  updateBlog,
-  deleteBlog,
+  getBlogsByAuthorId,
+  updateBlogById,
+  deleteBlogById,
 };
+
+module.exports = blogController;

@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+exports.router = router;
 const categoriesController = require("../controllers/categories");
 
 
@@ -28,24 +29,22 @@ router.get("/", (req, res) => {
  */
 router.get("/:id", (req, res) => {
     categoriesController.getCategoryById(req, res);
-
 });
 
 /**
  * Update category by id
- * PUT /api/categories/:id
+ * UPDATE /api/categories/:id
  */
 router.put("/:id", (req, res) => {
     categoriesController.updateCategory(req, res);
 });
-
 
 /**
  * Delete category by id
  * DELETE /api/categories/:id
  */
 router.delete("/:id", (req, res) => {
-    categoriesController.deleteCategory(req.params.id);
+    categoriesController.deleteCategory(req, res);
 });
 
 module.exports = router;

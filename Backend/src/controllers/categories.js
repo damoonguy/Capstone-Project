@@ -1,17 +1,18 @@
 const Category = require("../models/Category");
+const Blog = require("../models/Blog");
 
 const createCategory = async (req, res) => {
   console.log(req.body);
 
   try {
     const category = new Category({
-      id: req.body.id,
       title: req.body.title,
       description: req.body.description,
       color: req.body.color,
     });
     const newCategory = await category.save();
-    return res.status(201).json({ message: "New category created!", data: newCategory });
+    const categoryRes = await Category.findById(newCategory._id);
+    return res.status(201).json({ message: "New category created!", data: categoryRes });
   } catch (error) {
     return res.status(500).json({ message: error.message, data: [] });
   }
@@ -44,7 +45,6 @@ const updateCategory = async (req, res) => {
   try {
     const category = await Category.findById(req.params.id);
     if (category) {
-      category.id = req.body.id || category.id;
       category.title = req.body.title || category.title;
       category.description = req.body.description || category.description;
       category.color = req.body.color || category.color;
@@ -60,14 +60,22 @@ const updateCategory = async (req, res) => {
 
 const deleteCategory = async (req, res) => {
   try {
+    const categoryDB = await Category.findById(req.params.id);
+    if (!categoryDB) {
+      return res.status(404).json({message: "category not found!", data: []});
+    }
+    const blogs =  await Blog.find();
+    const blogsUsingCat = blogs.map(blog => blog.categoryIds.find(x => x.toString() === req.params.id ? true : false));
+    if (blogsUsingCat.find(x => x !== undefined ? true : false)) {
+      return res.status(400).json({ message: "Can't delete category with existing blogs!" });
+    } 
     const category = await Category.findByIdAndDelete(req.params.id);
     if (category) {
       return res.status(200).json({ message: "category deleted!" });
-    } else {
-      return res.status(404).json({ message: "category not found!" });
     }
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    console.log(error);
+    res.status(500).json({ message: error.message });
   }
 };
 

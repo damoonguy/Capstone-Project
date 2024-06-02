@@ -1,6 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.min.js";
 import "bootstrap/dist/js/bootstrap.bundle.min";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 import "./App.css";
 
@@ -10,6 +11,8 @@ import HomePage from "./pages/Home";
 import BlogsPage from "./pages/Blogs";
 import BlogPage from "./pages/Blog";
 import CategoriesPage from "./pages/Categories";
+import ProfilePage from "./pages/Profile";
+import AboutPage from "./pages/About";
 
 
 const routes = [
@@ -26,7 +29,11 @@ const routes = [
     element: <BlogsPage />,
   },
   {
-    path: "/blogs/category/:categoryIdPassed?",
+    path: "/about",
+    element: <AboutPage />,
+  },
+  {
+    path: "/blogs/:categoryIdPassed?",
     element: <BlogsPage />,
   },
   {
@@ -36,6 +43,10 @@ const routes = [
   {
     path: "/categories",
     element: <CategoriesPage />,
+  },
+  {
+    path: "/profile/:authorId",
+    element: <ProfilePage />,
   },
 ];
 

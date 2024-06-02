@@ -1,11 +1,14 @@
 import React from "react";
+
 import PropTypes from "prop-types";
 
+import "./index.css";
 
-export default function Categories({ blogPost }) {
+export default function Categories({ categories }) {
+  if (!categories && !categories?.length) return null;
   return (
     <div className="flex-wrap">
-      {blogPost.categories.map((category, index) => {
+      {categories.map((category, index) => {
         return (
           <p
             key={index}
@@ -23,6 +26,6 @@ export default function Categories({ blogPost }) {
   );
 }
 
-Categories.propTypes = { 
-  blogPost: PropTypes.object.isRequired
-}
+Categories.prototype = {
+  categories: PropTypes.array.isRequired,
+};

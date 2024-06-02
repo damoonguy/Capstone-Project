@@ -9,7 +9,7 @@ const blogController = require("../controllers/blogs");
  * POST /api/blogs/
  */
 router.post("/", (req, res) => {
-    blogController.createBlog(req, res);
+    blogController.createBlogs(req, res);
 });
 
 /**
@@ -32,7 +32,7 @@ router.get("/category/:categoryId", (req, res) => {
  * get blogs by author id
  * GET /api/blogs/author/:id
  */
-router.get("/author/:id", (req, res) => {
+router.get("/author/:authorId", (req, res) => {
     blogController.getBlogsByAuthorId(req, res);
 });
 
@@ -42,7 +42,7 @@ router.get("/author/:id", (req, res) => {
  * GET /api/blogs/:id
  */
 router.get("/:id", (req, res) => {
-    blogController.getBlog(req, res);
+    blogController.getBlogById(req, res);
 });
 
 /**
@@ -50,7 +50,7 @@ router.get("/:id", (req, res) => {
  * PUT /api/blogs/
  */
 router.put("/:id", (req, res) => {
-    blogController.updateBlog(req, res);
+    blogController.updateBlogById(req, res);
 });
 
 /**
@@ -58,7 +58,7 @@ router.put("/:id", (req, res) => {
  * DELETE /api/blogs/
  */
 router.delete("/:id", (req, res) => {
-    blogController.deleteBlog(req, res);
+    blogController.deleteBlogById(req, res);
 });
 
 
