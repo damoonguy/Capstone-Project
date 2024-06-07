@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 
 export default function BlogItemText({ blogPost, headerFontSize }) {
-  
+
   return (
     <div>
       <div style={{ display: "flex" }}>

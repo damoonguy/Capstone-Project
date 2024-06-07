@@ -13,6 +13,8 @@ import AddEditCategoryModal from "../../components/AddEditCategoryModal";
 import DeleteCategoryModal from "../../components/DeleteCategoryModal";
 
 export default function CategoriesPage() {
+  const user = JSON.parse(localStorage.getItem("user"));
+
   const [categories, setCategories] = useState([]);
   const [addCategory, setAddCategory] = useState();
   const [editCategory, setEditCategory] = useState();
@@ -104,7 +106,7 @@ export default function CategoriesPage() {
 
   const AddButton = () => {
     return (
-      <button className="btn btn-outline-dark h-75" onClick={onCategoryAdd}>
+      <button className="btn btn-outline-dark m-3" onClick={onCategoryAdd}>
         ADD CATEGORY
       </button>
     );
@@ -121,7 +123,7 @@ export default function CategoriesPage() {
         <Heading />
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <p className="page-subtitle">Categories</p>
-          <AddButton />
+          {user && user?.token ? <AddButton /> : null }
         </div>
         <CategoryList
           categories={categories}

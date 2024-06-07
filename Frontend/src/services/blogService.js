@@ -3,6 +3,8 @@ const createBlog = async (blog) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization:
+            "Bearer " + JSON.parse(localStorage.getItem("user")).token,
       },
       body: JSON.stringify(blog),
     });
@@ -112,7 +114,7 @@ const createBlog = async (blog) => {
         throw error.message;
       }
     }
-  
+    
     const blogsApiData = await response.json();
     return blogsApiData;
   };
@@ -122,6 +124,8 @@ const createBlog = async (blog) => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        Authorization:
+            "Bearer " + JSON.parse(localStorage.getItem("user")).token,
       },
       body: JSON.stringify(blog),
     });
@@ -145,6 +149,8 @@ const createBlog = async (blog) => {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
+        Authorization:
+            "Bearer " + JSON.parse(localStorage.getItem("user")).token,
       },
     });
   

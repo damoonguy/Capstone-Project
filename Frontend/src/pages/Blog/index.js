@@ -51,12 +51,14 @@ export default function BlogPage() {
         setIsError(false);
         setMessage("");
       }
+
+      const navToAuthorProfile = () => {
+        nav(`/profile/${blog.author.id}`);
+      }
     
       if (isLoading || !blog) {
         return <Loading />;
       }
-
-      console.log(blog);
     
       return (
         <>
@@ -88,7 +90,7 @@ export default function BlogPage() {
                   })}
                 </article>
               </div>
-               <div className="author col-md-4" > 
+               <div className="author col-md-4" onClick={navToAuthorProfile}> 
                 <div className="position-sticky my-5" style={{ top: "2rem" }}>
                   <div className="p-4 mb-3 bg-light rounded">
                     <h4 className="fst-italic">About the author: {blog.author.firstName}</h4>

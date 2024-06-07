@@ -1,13 +1,29 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { useDispatch } from "react-redux";
 
 import BlogItem from "../BlogItem";
 
 import "./index.css";
 
-export default function BlogList({ blogs, onBlogEdit, onBlogDelete }) {
+import {
+  setDeleteBlog,
+  setEditBlog,
+} from "../../features/blogsSlice";
+
+export default function BlogList({ blogs }) {
+  const dispatch = useDispatch();
+
   if (!blogs && !blogs?.length) {
     return null;
+  }
+
+  const onBlogEdit = (blog) => {
+    dispatch(setEditBlog(blog));
+  }
+
+  const onBlogDelete= (blog) => {
+    dispatch(setDeleteBlog(blog));
   }
 
   return (
@@ -18,7 +34,7 @@ export default function BlogList({ blogs, onBlogEdit, onBlogDelete }) {
             key={index}
             index={index}
             blog={blog}
-            imageOrientation={"top"}
+            imageOrientation="top"
             onBlogEdit={onBlogEdit}
             onBlogDelete={onBlogDelete}
           />
@@ -30,6 +46,4 @@ export default function BlogList({ blogs, onBlogEdit, onBlogDelete }) {
 
 BlogList.prototype = {
   blogs: PropTypes.array.isRequired,
-  onBlogEdit: PropTypes.func.isRequired,
-  onBlogDelete: PropTypes.func.isRequired,
 };

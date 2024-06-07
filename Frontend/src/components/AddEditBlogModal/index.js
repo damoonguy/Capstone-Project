@@ -1,19 +1,26 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-import PropTypes from "prop-types";
+import {
+  createBlog,
+  updateBlog,
+  setAddBlog,
+  setEditBlog,
+} from "../../features/blogsSlice";
 
 import { Modal } from "bootstrap";
 
 import Categories from "../Categories";
 
-export default function AddEditBlogModal({
-  addBlog,
-  editBlog,
-  categories,
-  createBlog,
-  updateBlog,
-  onClose,
-}) {
+export default function AddEditBlogModal() {
+
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const dispatch = useDispatch();
+
+  const { addBlog, editBlog } = useSelector((state) => state.blogs);
+  const { categories } = useSelector((state) => state.categories);
+
   const [blog, setBlog] = useState();
 
   const modalEl = document.getElementById("addEditModal");
@@ -22,13 +29,14 @@ export default function AddEditBlogModal({
     return modalEl ? new Modal(modalEl) : null;
   }, [modalEl]);
 
+
   useEffect(() => {
     if (addBlog) {
       setBlog(addBlog);
-      addEditModal.show();
+      addEditModal?.show();
     } else if (editBlog) {
       setBlog(editBlog);
-      addEditModal.show();
+      addEditModal?.show();
     }
   }, [addBlog, editBlog, addEditModal]);
 
@@ -36,22 +44,23 @@ export default function AddEditBlogModal({
     e?.preventDefault();
     if (isFormValid()) {
       if (addBlog) {
-        createBlog(blog);
+        dispatch(createBlog(blog));
       } else if (editBlog) {
-        updateBlog(blog);
+        dispatch(updateBlog(blog));
       }
       resetBlog();
-      addEditModal?.hide();
+      addEditModal.hide();
     }
   };
 
   const resetBlog = () => {
     setBlog({
       title: "",
+      image: "",
       description: "",
       categories: [],
       content: [],
-      authorId: "",
+      authorId: user?.id,
     });
   };
 
@@ -64,7 +73,11 @@ export default function AddEditBlogModal({
   const onCloseModal = () => {
     resetBlog();
     addEditModal?.hide();
-    onClose();
+    if (editBlog) {
+      dispatch(setEditBlog(null));
+    } else if (addBlog) {
+      dispatch(setAddBlog(null));
+    }
   };
 
   if (!categories && !categories?.length) {
@@ -313,14 +326,5 @@ export default function AddEditBlogModal({
         </div>
       </div>
     </div>
-  );
+  )
 }
-
-AddEditBlogModal.prototype = {
-  addBlog: PropTypes.object,
-  editBlog: PropTypes.object,
-  categories: PropTypes.array,
-  createBlog: PropTypes.func,
-  updateBlog: PropTypes.func,
-  onClose: PropTypes.func,
-};

@@ -8,12 +8,13 @@ import EditButtons from "../EditButtons";
 
 export default function CategoriesList({ categories, onEdit, onDelete }) {
   const nav = useNavigate();
+  const user = JSON.parse(localStorage.getItem("user"));
   if (!categories && !categories?.length) {
     return null;
   }
 
   const navToBlogsPage = (id) => {
-    if (!onEdit && !onDelete) {
+    if ((!user && !user?.token) || (!onEdit && !onDelete)) {
      nav(`/blogs/${id}`);
   }};
 
@@ -42,13 +43,16 @@ export default function CategoriesList({ categories, onEdit, onDelete }) {
                 {category.description.substring(1, 100)} ...
               </p>
             </div>
-            {onEdit && onDelete && (
+            { user && user?.token && onEdit && onDelete && (
               <EditButtons
                 onEdit={() => {
                   onEdit(category);
                 }}
                 onDelete={() => {
                   onDelete(category);
+                }}
+                onNavigate={() => {
+                  nav(`/blogs/${category.id}`)
                 }}
               />
             )}

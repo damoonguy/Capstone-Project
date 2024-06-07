@@ -3,9 +3,8 @@ const Blog = require("../models/Blog");
 const createBlogs = async (req, res) => {
   try {
     const categoryIds = req.body.categories.map((x) => x.id);
-    console.log(categoryIds);
     const blog = new Blog({
-      author: req.body.author,
+      authorId: req.body.authorId,
       categoryIds: categoryIds,
       title: req.body.title,
       image: req.body.image,
@@ -15,7 +14,7 @@ const createBlogs = async (req, res) => {
     const newBlog = await blog.save();
     const blogRes = await Blog.findById(newBlog._id).populate({
       path: "categoryIds",
-    });
+    }).populate({path: "authorId"});
     res.status(201).json({ message: "New blog created!", data: blogRes });
   } catch (error) {
     res.status(500).json({ message: error.message, data: {} });
@@ -24,11 +23,12 @@ const createBlogs = async (req, res) => {
 
 const getBlogs = async (req, res) => {
   try {
-    const blogs = await Blog.find().populate({path: "categoryIds"});
+    const blogs = await Blog.find().populate({path: "categoryIds",}).populate({path: "authorId",});
     res.status(200).json({
     message: "Get all blogs!",
     data: blogs,
     });
+    return;
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: err.message, data: {} });
@@ -37,10 +37,10 @@ const getBlogs = async (req, res) => {
 
 const getBlogById = async (req, res) => {
   try {
-    console.log(req.params.id);
+    
     const blog = await Blog.findById(req.params.id).populate({
       path: "categoryIds",
-    });
+    }).populate({path: "authorId"});
     if (blog) {
       res.status(200).json({ message: "Return blog by ID!", data: blog });
     } else {
@@ -53,12 +53,12 @@ const getBlogById = async (req, res) => {
 
 const getBlogsByCategoryId = async (req, res) => {
   try {
-    console.log(req.params.categoryId);
+
     let filter = {};
     if (req.params.categoryId != "null" && req.params.categoryId != "undefined") {
       filter = { categoryIds: req.params.categoryId };
     }
-    const blogs = await Blog.find(filter).populate({ path: "categoryIds" });
+    const blogs = await Blog.find(filter).populate({ path: "categoryIds" }).populate({path: "authorId"});
     res.status(200).json({
       message: "Get blogs by categoryID!",
       data: blogs,
@@ -70,10 +70,14 @@ const getBlogsByCategoryId = async (req, res) => {
 
 const getBlogsByAuthorId = async (req, res) => {
   try {
-    console.log(req.params.id);
-    const blogs = await Blog.find(filter).populate({ path: "categoryIds" });
+
+    let filter = {};
+    if (req.params.authorId != "null" && req.params.authorId != "undefined") {
+      filter = { authorId: req.params.authorId };
+    }
+    const blogs = await Blog.find(filter).populate({ path: "categoryIds" }).populate({path: "authorId"});
     res.status(200).json({
-      message: "Get blogs by categoryID!",
+      message: "Get blogs by authorID!",
       data: blogs,
     });
   } catch (err) {
@@ -86,11 +90,11 @@ const updateBlogById = async (req, res) => {
   console.log(req.body);
   try {
     const blog = await Blog.findById(req.params.id).populate({
-      path: "categoryIds",
-    });
+      path: "categoryIds"
+    }).populate({path: "authorId"});
     if (blog) {
       const categoryIds = req?.body?.categories.map((x) => x.id);
-      blog.author = req?.body?.author || blog.author;
+      blog.authorId = req?.body?.authorId || blog.authorId;
       blog.categoryIds = categoryIds ? categoryIds : blog.categoryIds;
       blog.title = req?.body?.title || blog.title;
       blog.description = req?.body?.description || blog.description;
@@ -101,7 +105,7 @@ const updateBlogById = async (req, res) => {
       });
       res.status(200).json({ message: "Blog updated!", data: blogRes });
     } else {
-      res.status(404).json({ message: "Blog not found!", data: [] });
+      res.status(404).json({ message: "Blog not found!"});
     }
   } catch (error) {
     res.status(500).json({ message: error.message, data: {} });

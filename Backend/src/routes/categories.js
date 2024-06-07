@@ -3,13 +3,14 @@ const router = express.Router();
 exports.router = router;
 const categoriesController = require("../controllers/categories");
 
+const {protect} = require("../middleware/auth");
 
 
 /**
  * Create new category
  * POST /api/categories
  */
-router.post("/", (req, res) => {
+router.post("/", protect, (req, res) => {
     categoriesController.createCategory(req, res);
 
 });
@@ -35,7 +36,7 @@ router.get("/:id", (req, res) => {
  * Update category by id
  * UPDATE /api/categories/:id
  */
-router.put("/:id", (req, res) => {
+router.put("/:id", protect, (req, res) => {
     categoriesController.updateCategory(req, res);
 });
 
@@ -43,7 +44,7 @@ router.put("/:id", (req, res) => {
  * Delete category by id
  * DELETE /api/categories/:id
  */
-router.delete("/:id", (req, res) => {
+router.delete("/:id", protect, (req, res) => {
     categoriesController.deleteCategory(req, res);
 });
 

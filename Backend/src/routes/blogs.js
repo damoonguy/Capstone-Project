@@ -3,12 +3,19 @@ const router = express.Router();
 
 const blogController = require("../controllers/blogs");
 
+const { protect } = require("../middleware/auth");
+
+const logMiddleware = (req, res, next) => {
+    console.log("I'm a middleware");
+    console.log(req.body);
+    next();
+}
 
 /**
  * Create new blog
  * POST /api/blogs/
  */
-router.post("/", (req, res) => {
+router.post("/", logMiddleware, protect, (req, res) => {
     blogController.createBlogs(req, res);
 });
 
@@ -49,7 +56,7 @@ router.get("/:id", (req, res) => {
  * Update blog by blog id
  * PUT /api/blogs/
  */
-router.put("/:id", (req, res) => {
+router.put("/:id", protect, (req, res) => {
     blogController.updateBlogById(req, res);
 });
 
@@ -57,7 +64,7 @@ router.put("/:id", (req, res) => {
  * Delete blog by id
  * DELETE /api/blogs/
  */
-router.delete("/:id", (req, res) => {
+router.delete("/:id", protect, (req, res) => {
     blogController.deleteBlogById(req, res);
 });
 

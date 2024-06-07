@@ -13,6 +13,8 @@ import BlogPage from "./pages/Blog";
 import CategoriesPage from "./pages/Categories";
 import ProfilePage from "./pages/Profile";
 import AboutPage from "./pages/About";
+import LoginPage from "./pages/Login";
+import RegisterPage from "./pages/Register";
 
 
 const routes = [
@@ -47,6 +49,14 @@ const routes = [
   {
     path: "/profile/:authorId",
     element: <ProfilePage />,
+  },
+  {
+    path: "/login",
+    element: <LoginPage />,
+  },
+  {
+    path: "/register",
+    element: <RegisterPage />,
   },
 ];
 

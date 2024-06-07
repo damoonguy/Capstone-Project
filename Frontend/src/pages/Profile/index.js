@@ -9,12 +9,14 @@ import SuccessToast from "../../components/SuccessToast";
 import ErrorToast from "../../components/ErrorToast";
 import BlogList from "../../components/BlogList";
 import AddEditBlogModal from "../../components/AddEditBlogModal";
-import AuthorDetails from "../../components/AuthorDetails";
+import DeleteBlogModal from "../../components/DeleteBlogModal";
 
 import blogService from "../../services/blogService";
+import authService from "../../services/authService";
 
 export default function ProfilePage() {
     let { authorId } = useParams();
+    const [author, setAuthor] = useState();
     const [blogs, setBlogs] = useState([]);
     const [isError, setIsError] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
@@ -25,10 +27,12 @@ export default function ProfilePage() {
       const getAuthorBlogs = async () => {
         try {
           setIsLoading(true);
-          const blogs = await blogService.getBlogsByAuthorId(authorId);
-          setBlogs(blogs.data);
+          const author = await authService.getUser(authorId);
+          const blogsRes = await blogService.fetchBlogsByAuthorId(authorId);
+          setBlogs(blogsRes.data);
+          setAuthor(author.data);
           setIsSuccess(true);
-          setMessage(blogs.message);
+          setMessage(blogsRes.message);
           setIsLoading(false);
         } catch (error) {
           setIsError(true);
@@ -38,6 +42,8 @@ export default function ProfilePage() {
       };
       getAuthorBlogs();
     }, [authorId]);
+
+    console.log(author);
   
     const resetSuccess = () => {
       setIsSuccess(false);
@@ -48,8 +54,24 @@ export default function ProfilePage() {
       setIsError(false);
       setMessage("");
     }
+
+    const AuthorDetails = () => {
+      return (
+        <div className="col-md-8 col-lg-6 col-xl-4 mx-auto">
+          <div className="position-sticky my-5" style={{ top: "2rem" }}>
+            <div className="p-4 mb-3 bg-light rounded">
+              <h4 className="fst-italic">
+                {author.firstName} {author.lastName}
+              </h4>
+              <img src={author.image} className="avatar" alt="..." />
+              <p>{author.bio.substring(0, 100)}...</p>
+            </div>
+          </div>
+        </div>
+      );
+    };
   
-    if (isLoading) {
+    if (isLoading || !author || !blogs) {
       return <Loading />;
     }
   
@@ -59,12 +81,11 @@ export default function ProfilePage() {
         <div className="container">
           <AuthorDetails /> 
           <p className="page-subtitle">Author Blog Posts</p>
-          <BlogList blogPosts={blogs} />
+          <BlogList blogs={blogs} />
           <Footer />
         </div>
-        {/* <EditProfileModal /> */}
         <AddEditBlogModal />
-        {/* <DeleteBlogModal /> */}
+        <DeleteBlogModal />
         <SuccessToast
           show={isSuccess}
           message={message}
