@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 require("dotenv").config();
 
 const blogsRoutes = require("./routes/blogs");
@@ -27,7 +28,10 @@ app.use("/api/blogs", blogsRoutes);
 app.use("/api/categories", categoriesRoutes);
 app.use("/api/auth", authRoutes);
 
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
 
+ 

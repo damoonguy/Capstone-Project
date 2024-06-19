@@ -11,6 +11,7 @@ import {
 import { Modal } from "bootstrap";
 
 import Categories from "../Categories";
+import FormImage from "../FormImage";
 
 export default function AddEditBlogModal() {
 
@@ -22,6 +23,7 @@ export default function AddEditBlogModal() {
   const { categories } = useSelector((state) => state.categories);
 
   const [blog, setBlog] = useState();
+  const [blogImage, setBlogImage] = useState();
 
   const modalEl = document.getElementById("addEditModal");
 
@@ -36,6 +38,7 @@ export default function AddEditBlogModal() {
       addEditModal?.show();
     } else if (editBlog) {
       setBlog(editBlog);
+      setBlogImage(editBlog?.image);
       addEditModal?.show();
     }
   }, [addBlog, editBlog, addEditModal]);
@@ -43,13 +46,14 @@ export default function AddEditBlogModal() {
   const onSubmit = (e) => {
     e?.preventDefault();
     if (isFormValid()) {
+      const blogForm = buildFormData();
       if (addBlog) {
-        dispatch(createBlog(blog));
+        dispatch(createBlog(blogForm));
       } else if (editBlog) {
-        dispatch(updateBlog(blog));
+        dispatch(updateBlog(blogForm));
       }
       resetBlog();
-      addEditModal.hide();
+      addEditModal?.hide();
     }
   };
 
@@ -60,7 +64,7 @@ export default function AddEditBlogModal() {
       description: "",
       categories: [],
       content: [],
-      authorId: user?.id,
+      authorId: "",
     });
   };
 
@@ -80,6 +84,26 @@ export default function AddEditBlogModal() {
     }
   };
 
+  const buildFormData = () => {
+    const formData = new FormData();
+    formData.append("id", blog.id);
+    formData.append("image", blog.image);
+    formData.append("title", blog.title);
+    formData.append("description", blog.description);
+    formData.append("categories", JSON.stringify(blog.categories));
+    formData.append("content", JSON.stringify(blog.content));
+    formData.append("authorId", user?._id);
+    return formData;
+  };
+
+  const onImageChange = (e) => {
+    if (e?.target?.files?.length) {
+      const file = e.target.files[0];
+      setBlogImage(URL.createObjectURL(file));
+      setBlog({ ...blog, image: file });
+    }
+  };
+
   if (!categories && !categories?.length) {
     return null;
   }
@@ -89,7 +113,7 @@ export default function AddEditBlogModal() {
       <div
         className="modal fade"
         id="addEditModal"
-        tabindex="-1"
+        tabIndex="-1"
         aria-labelledby="addEditModalLabel"
         aria-hidden="true"
       >
@@ -108,6 +132,7 @@ export default function AddEditBlogModal() {
             </div>
             <div className="modal-body">
               <form id="blogForm">
+                <FormImage image={blogImage} onChange={onImageChange}/>
                 <div className="input-group mb-3">
                   <label
                     className="input-group-text"

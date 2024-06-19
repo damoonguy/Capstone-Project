@@ -1,15 +1,25 @@
 const Blog = require("../models/Blog");
 
+const { uploadToFirebaseStorage } =  require("../services/google-cloud");
+
 const createBlogs = async (req, res) => {
+  console.log(req.body);
   try {
-    const categoryIds = req.body.categories.map((x) => x.id);
+    let imageURL = "";
+    if (req?.file?.path) {
+      imageURL = await uploadToFirebaseStorage(
+        req?.file?.path,
+        req?.file?.path
+      );
+    }
+    const categoryIds = JSON.parse(req?.body?.categories).map((x) => x.id);
     const blog = new Blog({
       authorId: req.body.authorId,
       categoryIds: categoryIds,
       title: req.body.title,
-      image: req.body.image,
+      image: imageURL,
       description: req.body.description,
-      content: req.body.content,
+      content: JSON.parse(req.body.content),
     });
     const newBlog = await blog.save();
     const blogRes = await Blog.findById(newBlog._id).populate({
@@ -88,17 +98,27 @@ const getBlogsByAuthorId = async (req, res) => {
 
 const updateBlogById = async (req, res) => {
   console.log(req.body);
+  console.log(req.file);
   try {
+    let imageURL = "";
+    if (req?.file?.path) {
+      imageURL = await uploadToFirebaseStorage(
+        req?.file?.path,
+        req?.file?.path
+      );
+    }
     const blog = await Blog.findById(req.params.id).populate({
       path: "categoryIds"
     }).populate({path: "authorId"});
     if (blog) {
-      const categoryIds = req?.body?.categories.map((x) => x.id);
+      const categoryIds = JSON.parse(req?.body?.categories).map((x) => x.id);
       blog.authorId = req?.body?.authorId || blog.authorId;
       blog.categoryIds = categoryIds ? categoryIds : blog.categoryIds;
       blog.title = req?.body?.title || blog.title;
       blog.description = req?.body?.description || blog.description;
-      blog.content = req.body.content ? req.body.content : blog.content;
+      blog.content = req.body.content ? JSON.parse(req.body.content) : blog.content;
+      blog.image = imageURL ? imageURL : blog.image;
+      blog.title = req?.body?.title || blog.title;
       const updatedBlog = await blog.save();
       const blogRes = await updatedBlog.populate({
         path: "categoryIds",

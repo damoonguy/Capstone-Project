@@ -4,6 +4,7 @@ const router = express.Router();
 const blogController = require("../controllers/blogs");
 
 const { protect } = require("../middleware/auth");
+const { upload } = require("../middleware/multer")
 
 const logMiddleware = (req, res, next) => {
     console.log("I'm a middleware");
@@ -15,7 +16,7 @@ const logMiddleware = (req, res, next) => {
  * Create new blog
  * POST /api/blogs/
  */
-router.post("/", logMiddleware, protect, (req, res) => {
+router.post("/", logMiddleware, protect, upload.single("image"), (req, res) => {
     blogController.createBlogs(req, res);
 });
 
@@ -56,7 +57,7 @@ router.get("/:id", (req, res) => {
  * Update blog by blog id
  * PUT /api/blogs/
  */
-router.put("/:id", protect, (req, res) => {
+router.put("/:id", protect, upload.single("image"), (req, res) => {
     blogController.updateBlogById(req, res);
 });
 
