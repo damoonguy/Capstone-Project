@@ -12,7 +12,6 @@ import BlogsPage from "./pages/Blogs";
 import BlogPage from "./pages/Blog";
 import CategoriesPage from "./pages/Categories";
 import ProfilePage from "./pages/Profile";
-import AboutPage from "./pages/About";
 import LoginPage from "./pages/Login";
 import RegisterPage from "./pages/Register";
 
@@ -29,10 +28,6 @@ const routes = [
   {
     path: "/blogs",
     element: <BlogsPage />,
-  },
-  {
-    path: "/about",
-    element: <AboutPage />,
   },
   {
     path: "/blogs/:categoryIdPassed?",

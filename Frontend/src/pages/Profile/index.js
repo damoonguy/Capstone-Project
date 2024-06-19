@@ -78,7 +78,7 @@ export default function ProfilePage() {
               <h4 className="fst-italic">
                 {author.firstName} {author.lastName}
               </h4>
-              {user && user.token ? <button id="edit-profile-button" className="btn btn-outline-dark m-3" onClick={onProfileEdit}>
+              {user && user.token && user._id === author._id ? <button id="edit-profile-button" className="btn btn-outline-dark m-3" onClick={onProfileEdit}>
               EDIT PROFILE
             </button> : null}
               <img src={author.image} className="avatar" alt="..." />

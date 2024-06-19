@@ -27,6 +27,7 @@ export default function BlogList({ blogs }) {
         onEdit={() => onBlogEdit(blog)}
         onDelete={() => onBlogDelete(blog)}
         onNavigate={() => nav(`/blog/${blog.id}`)}
+        onBlog={true}
       />
     );
   };

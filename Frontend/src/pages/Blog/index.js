@@ -74,8 +74,8 @@ export default function BlogPage() {
                   <div className="my-5">
                     <h2 className="blog-post-title">{blog.title}</h2>
                     <p className="blog-post-meta">
-                      {blog.updatedAt.slice(0,10)} 
-                      <Link to={"/profile/" + blog.author.id}>
+                      {blog.updatedAt.slice(0,10)} &nbsp; 
+                      <Link to={"/profile/" + blog.author.id} style={{color: "blue"}}>
                         {blog.author.firstName} {blog.author.lastName}
                       </Link>
                     </p>
