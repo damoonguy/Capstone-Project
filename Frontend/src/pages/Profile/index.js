@@ -11,10 +11,22 @@ import BlogList from "../../components/BlogList";
 import AddEditBlogModal from "../../components/AddEditBlogModal";
 import DeleteBlogModal from "../../components/DeleteBlogModal";
 
+import "./index.css";
+
+import {
+  setEditUser
+} from "../../features/authSlice";
+
 import blogService from "../../services/blogService";
 import authService from "../../services/authService";
+import EditProfileModal from "../../components/EditProfileModal";
+import { useDispatch } from "react-redux";
 
 export default function ProfilePage() {
+
+    const dispatch = useDispatch();
+
+    const user = JSON.parse(localStorage.getItem("user"));
     let { authorId } = useParams();
     const [author, setAuthor] = useState();
     const [blogs, setBlogs] = useState([]);
@@ -42,8 +54,6 @@ export default function ProfilePage() {
       };
       getAuthorBlogs();
     }, [authorId]);
-
-    console.log(author);
   
     const resetSuccess = () => {
       setIsSuccess(false);
@@ -55,16 +65,25 @@ export default function ProfilePage() {
       setMessage("");
     }
 
+    const onProfileEdit = () => {
+      dispatch(setEditUser(author));
+    }
+    
+
     const AuthorDetails = () => {
       return (
-        <div className="col-md-8 col-lg-6 col-xl-4 mx-auto">
+        <div id="author-details" className="col-md-12 col-lg-12 col-xl-12 mx-auto">
           <div className="position-sticky my-5" style={{ top: "2rem" }}>
             <div className="p-4 mb-3 bg-light rounded">
               <h4 className="fst-italic">
                 {author.firstName} {author.lastName}
               </h4>
+              {user && user.token ? <button id="edit-profile-button" className="btn btn-outline-dark m-3" onClick={onProfileEdit}>
+              EDIT PROFILE
+            </button> : null}
               <img src={author.image} className="avatar" alt="..." />
-              <p>{author.bio.substring(0, 100)}...</p>
+              <h4>Bio:</h4>
+              <p>{author.bio}</p>
             </div>
           </div>
         </div>
@@ -84,6 +103,7 @@ export default function ProfilePage() {
           <BlogList blogs={blogs} />
           <Footer />
         </div>
+        <EditProfileModal/>
         <AddEditBlogModal />
         <DeleteBlogModal />
         <SuccessToast

@@ -8,10 +8,13 @@ import Footer from "../../components/Footer";
 import SuccessToast from "../../components/SuccessToast";
 import ErrorToast from "../../components/ErrorToast";
 
+import "./index.css";
+
 
 import { useParams } from "react-router-dom";
 
 import blogService from "../../services/blogService";
+
 
 
 
@@ -94,7 +97,7 @@ export default function BlogPage() {
                 <div className="position-sticky my-5" style={{ top: "2rem" }}>
                   <div className="p-4 mb-3 bg-light rounded">
                     <h4 className="fst-italic">About the author: {blog.author.firstName}</h4>
-                    <img src={blog.author.image} className="avatar" alt="..." />
+                    <img src={blog.author.image} className="blog-author-avatar" alt="..." />
                     <p>{blog.author.bio.substring(0, 100)}...</p>
                   </div>
                 </div>

@@ -13,7 +13,7 @@ export default function FormImage({ image, onChange }) {
       </label>
       <input
         ref={fileInput}
-        // style={{ display: "none" }}
+        //style={{ display: "none" }}
         id="fileInput"
         type="file"
         name="img"

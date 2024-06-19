@@ -68,9 +68,9 @@ const register = async (userData) => {
     return responseData;
   };
   
-  const updateUser = async (userId, userData) => {
+  const updateUser = async (userData) => {
     const response = await fetch(
-      `http://localhost:8000/api/auth/user/${userId}`,
+      `http://localhost:5000/api/auth/user/${userData.get("id")}`,
       {
         method: "PUT",
         headers: {

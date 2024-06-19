@@ -2,6 +2,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
+const { uploadToFirebaseStorage } =  require("../services/google-cloud");
+
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
       // expiresIn: "1d",
@@ -87,8 +89,18 @@ const login = async (req, res) => {
   };
   
   const updateUser = async (req, res) => {
+    console.log(req.body);
+    console.log(req.file);
     try {
+      let imageURL = "";
+      if (req?.file?.path) {
+        imageURL = await uploadToFirebaseStorage(
+          req?.file?.path,
+          req?.file?.path
+        );
+      }
       const user = await User.findById(req.params.id);
+      console.log(user);
       if (!user) {
         res.status(404).json({ message: "User not found" });
         return;
@@ -97,6 +109,7 @@ const login = async (req, res) => {
       user.lastName = req.body.lastName || user.lastName;
       user.email = req.body.email || user.email;
       user.bio = req.body.bio || user.bio;
+      user.image = imageURL ? imageURL : user.image;
       if (req.body.password) {
         const salt = await bcrypt.genSalt(10);
         user.password = await bcrypt.hash(req.body.password, salt);

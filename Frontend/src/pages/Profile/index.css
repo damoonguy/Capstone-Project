@@ -1,0 +1,13 @@
+#author-details .avatar {
+    max-width: 50%;
+}
+
+#author-details h4 {
+    margin-top: 10px;
+}
+
+#edit-profile-button {
+    position: absolute;
+    right: 5px;
+    top: 0px;
+}
