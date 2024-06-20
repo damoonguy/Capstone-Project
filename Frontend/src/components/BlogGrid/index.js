@@ -21,7 +21,7 @@ export default function BlogGrid({ blogPosts }) {
               </div>
           </div>
   
-          <div className="col-12 col-md-6 col-lg-6 d-flex flex-column">
+          <div className="col-12 col-md-6 col-lg-6 d-flex flex-column flex-grow">
             {blogPosts.length > 1 && (
               <div className="card">
                 <BlogItem imageOrientation="left" index={1} blog={blogPosts[1]} />

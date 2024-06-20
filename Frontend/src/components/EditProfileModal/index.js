@@ -39,6 +39,7 @@ export default function EditProfileModal() {
       lastName: "",
       bio: "",
       image: "",
+      email: ""
     });
   };
 
@@ -49,6 +50,7 @@ export default function EditProfileModal() {
     formData.append("firstName", authorEdit.firstName);
     formData.append("lastName", authorEdit.lastName);
     formData.append("bio", authorEdit.bio);
+    formData.append("email", authorEdit.email);
     return formData;
   };
 
@@ -150,6 +152,21 @@ export default function EditProfileModal() {
                   value={authorEdit?.bio}
                   onChange={(e) => {
                     setAuthorEdit({ ...authorEdit, bio: e.target.value });
+                  }}
+                ></input>
+                <div className="valid-feedback">Looks good!</div>
+              </div>
+              <div className="mb-3">
+                <label htmlFor="email" className="form-label">
+                  Email
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="email"
+                  value={authorEdit?.email}
+                  onChange={(e) => {
+                    setAuthorEdit({ ...authorEdit, email: e.target.value });
                   }}
                 ></input>
                 <div className="valid-feedback">Looks good!</div>
